@@ -183,7 +183,7 @@ def run(train_data,
           wandb.log({'loss': loss})
           valid_losses.append(loss)
           valid_iternums.append(i)
-          log_img_1 = wandb.Image(np.stack(target, predicted), caption = 'target - predicted')
+          log_img_1 = wandb.Image(predicted, caption = 'target - predicted')
           log_img_2 = visualize(target, predicted, i, iternums, valid_iternums, psnrs, to_save = to_save, training_losses = training_losses, valid_losses = valid_losses)
           wandb.log({"target-predicted": log_img_1, "full-info": log_img_2})
   print('Done')
