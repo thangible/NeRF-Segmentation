@@ -10,6 +10,7 @@ import os
 import wandb
 import imageio
 import tqdm
+import random
 
 ###VISUALIZE####
 
@@ -123,14 +124,15 @@ def run(train_data,
 
   num_samples = train_imgs.shape[0]
   
-  import random
-  if limit:
-    picked = random.sample(range(1, num_samples), limit)
-    images = train_imgs[picked]
-    poses = train_poses[picked]
-  else:
-    images = train_imgs
-    poses = train_poses
+  
+  # if limit:
+  #   picked = random.sample(range(1, num_samples), limit)
+  #   images = train_imgs[picked]
+  #   poses = train_poses[picked]
+  # else:
+  #   images = train_imgs
+  #   poses = train_poses
+  images = train_imgs
   
   if not(model):
     model = init_model(D = D, W = W, L_embed = L_embed, channel = channel)
