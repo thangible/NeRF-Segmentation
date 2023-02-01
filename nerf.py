@@ -201,13 +201,13 @@ if __name__ == "__main__":
   CHANNEL = 4
   DEPTH = 8
   WIDTH_NETWORK = 64
-  EPOCHS = 5000
+  EPOCHS = 10000
   SEE = EPOCHS //50
   RAY_SAMPLES = 64
-  L_EMBED = 6
+  L_EMBED = 20
   PSNR_SAMPLES = 10
   LIMIT = None
-  LR  = 5e-3
+  LR  = 1e-4
   TRAIN_DATA = (train_imgs, train_transform)
   TEST_DATA = (test_imgs, test_transform)
 
