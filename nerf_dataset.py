@@ -45,5 +45,3 @@ def get_transform_data(transform, W):
   tform_cam2world = np.array([x['transform_matrix'] for x in train_transform['frames']])
   focal = np.array([.5 * W / np.tan(.5 * camera_angle_x)])
   return tform_cam2world, focal, camera_angle_x
-
-plt.imshow(train_imgs[0])

@@ -98,7 +98,7 @@ def get_2d_from_pose(ground_truth,model, pose, height, width, focal, near, far, 
 def run(train_data, 
         test_data,
         model = None,
-        channel = 1,
+        channel = 4,
         L_embed = 6,
         D = 8,
         W = 64,
@@ -133,7 +133,7 @@ def run(train_data,
     poses = train_poses
   
   if not(model):
-    model = init_model(D = D, W = W, L_embed = L_embed)
+    model = init_model(D = D, W = W, L_embed = L_embed, channel = channel)
   optimizer = tf.keras.optimizers.Adam(lr)
   psnrs = []
   iternums = []
@@ -153,7 +153,7 @@ def run(train_data,
       rays_o = tf.cast(rays_o, tf.float32) 
       rays_d = tf.cast(rays_d, tf.float32) 
       with tf.GradientTape() as tape:
-        predicted, _, _ , _  = render_rays_segment(model, rays_o, rays_d, near=near, far=far, N_samples=ray_samples, rand=True, L_embed = L_embed) 
+        predicted, _, _ , _  = render_rays_segment(model, rays_o, rays_d, near=near, far=far, N_samples=ray_samples, rand=True, L_embed = L_embed, channel = channel) 
         loss = tf.reduce_mean(tf.square(predicted - target))
       gradients = tape.gradient(loss, model.trainable_variables)
       optimizer.apply_gradients(zip(gradients, model.trainable_variables))
@@ -173,7 +173,7 @@ def run(train_data,
           rays_o, rays_d = get_rays(height, width, focal, pose)
           rays_o = tf.cast(rays_o, tf.float32) #edit
           rays_d = tf.cast(rays_d, tf.float32) #edit
-          predicted, _, _, _ = render_rays_segment(model, rays_o, rays_d, near=near, far=far, N_samples=ray_samples, L_embed = L_embed, channel = 4)
+          predicted, _, _, _ = render_rays_segment(model, rays_o, rays_d, near=near, far=far, N_samples=ray_samples, L_embed = L_embed, channel = channel)
           loss = tf.reduce_mean(tf.square(predicted - target))
           valid_losses.append(loss)
           valid_iternums.append(i)
