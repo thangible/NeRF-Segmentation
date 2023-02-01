@@ -6,9 +6,9 @@ tf.compat.v1.enable_eager_execution()
 from tqdm.notebook import tqdm
 import numpy as np
 import cv2
-from model import init_model, render_rays_segment, get_rays
+from model_config import init_model, render_rays_segment, get_rays
 from nerf_ultils import get_avg_PSNR, visualize
-from dataset import train_imgs, val_imgs, test_imgs, train_transform, test_transform, val_transform, get_transform_data
+from nerf_dataset import train_imgs, val_imgs, test_imgs, train_transform, test_transform, val_transform, get_transform_data
 import random
 import wandb
 
