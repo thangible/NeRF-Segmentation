@@ -112,7 +112,7 @@ def run(train_data,
         psnr_samples = 10,
         to_save = False,
         limit = None,
-        lr = 5e-4):
+        lr = 7e-5):
   #UNPACK 
   (train_imgs, train_transform) = train_data
   (test_imgs, test_transform) = test_data
@@ -183,9 +183,8 @@ def run(train_data,
           wandb.log({'loss': loss})
           valid_losses.append(loss)
           valid_iternums.append(i)
-          log_img_1 = wandb.Image(predicted, caption = 'target - predicted')
           log_img_2 = visualize(target, predicted, i, iternums, valid_iternums, psnrs, to_save = to_save, training_losses = training_losses, valid_losses = valid_losses)
-          wandb.log({"target-predicted": log_img_1, "full-info": log_img_2})
+          wandb.log({"target-predicted": predicted, "full-info": log_img_2})
   print('Done')
   return model, focal, psnrs, training_losses, valid_losses, iternums, valid_iternums
 
