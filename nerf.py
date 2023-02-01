@@ -42,7 +42,8 @@ def visualize(ground_true, predicted,
               save_dir: str = './figs/' , 
               training_losses = None,
               valid_losses = None):
-  plt.figure(figsize=(20,10))
+  f = plt.figure(figsize=(20,10))
+  ax = f.add_subplot(1,1,1)
   plt.subplot(141)
   plt.imshow(ground_true)
   plt.subplot(142)
@@ -65,7 +66,7 @@ def visualize(ground_true, predicted,
       os.mkdir(save_dir)
     plt.savefig(path)
   plt.show()  
-  return plt
+  return f
 
 def get_avg_PSNR(model, test_data, sample_num , near, far, ray_samples, L_embed, channel):
   import random
@@ -184,6 +185,7 @@ def run(train_data,
           valid_iternums.append(i)
           fig = visualize(target, predicted, i, iternums, valid_iternums, psnrs, to_save = to_save, training_losses = training_losses, valid_losses = valid_losses)
           images = wandb.Image(fig, caption="target, predicted, psnrs, loss")
+          plt.close()
   print('Done')
   return model, focal, psnrs, training_losses, valid_losses, iternums, valid_iternums
 
