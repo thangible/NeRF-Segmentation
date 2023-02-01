@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-dir = "/content/gdrive/MyDrive/Datasets/nerf_data/semantic_segmentation/cello_single"
+dir = "./nerf_data/semantic_segmentation/cello_single"
 images_train_path = os.path.join(dir,'train')
 images_test_path = os.path.join(dir,'test')
 images_val_path = os.path.join(dir,'val')
