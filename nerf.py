@@ -131,9 +131,9 @@ def run(train_data,
   #   poses = train_poses[picked]
   # else:
   #   images = train_imgs
-  #   poses = train_poses
-  images = train_imgs
-  poses = train_poses
+  # #   poses = train_poses
+  # images = train_imgs
+  # poses = train_poses
   
   if not(model):
     model = init_model(D = D, W = W, L_embed = L_embed, channel = channel)
@@ -149,9 +149,9 @@ def run(train_data,
   t = time.time()
   i_plot = epochs // see
   for i in range(epochs+1):
-      img_i = np.random.randint(images.shape[0])
+      img_i = np.random.randint(train_imgs.shape[0])
       target = train_imgs[img_i]
-      pose = poses[img_i]
+      pose = train_poses[img_i]
       rays_o, rays_d = get_rays(height, width, focal, pose)
       rays_o = tf.cast(rays_o, tf.float32) 
       rays_d = tf.cast(rays_d, tf.float32) 
@@ -169,10 +169,10 @@ def run(train_data,
   #VISUALIZE WHILE RUNNING - It shows total of "see"-parameter images, 
       if i%i_plot==0:
           print(i, (time.time() - t) / i_plot, 'secs per iter')
-          img_i = np.random.randint(images.shape[0])
+          img_i = np.random.randint(train_imgs.shape[0])
           img_i = 0 #FIX TO 0
           target = train_imgs[img_i]
-          pose = poses[img_i]
+          pose = train_poses[img_i]
           t = time.time() 
           rays_o, rays_d = get_rays(height, width, focal, pose)
           rays_o = tf.cast(rays_o, tf.float32) #edit
