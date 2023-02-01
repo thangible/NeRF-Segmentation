@@ -133,6 +133,7 @@ def run(train_data,
   #   images = train_imgs
   #   poses = train_poses
   images = train_imgs
+  poses = train_poses
   
   if not(model):
     model = init_model(D = D, W = W, L_embed = L_embed, channel = channel)
