@@ -66,7 +66,7 @@ def visualize(ground_true, predicted,
   plt.show()  
   return plt
 
-def get_avg_PSNR(model, test_data, sample_num , near, far, ray_samples, L_embed):
+def get_avg_PSNR(model, test_data, sample_num , near, far, ray_samples, L_embed, channel):
   import random
   test_imgs, test_transform = test_data
   length, height, width = test_imgs.shape[:3]
@@ -79,7 +79,7 @@ def get_avg_PSNR(model, test_data, sample_num , near, far, ray_samples, L_embed)
       rays_o, rays_d = get_rays(height, width, focal, test_pose)
       rays_o = tf.cast(rays_o, tf.float32) #edit
       rays_d = tf.cast(rays_d, tf.float32) #edit
-      predicted, _, _, _ = render_rays_segment(model, rays_o, rays_d, near= near, far= far, N_samples=ray_samples, L_embed = L_embed)
+      predicted, _, _, _ = render_rays_segment(model, rays_o, rays_d, near= near, far= far, N_samples=ray_samples, L_embed = L_embed, channel = channel)
       loss = tf.reduce_mean(tf.square(predicted - test_img))
       psnr = -10. * tf.math.log(loss) / tf.math.log(10.)
       psnrs.append(psnr.numpy())
@@ -89,7 +89,7 @@ def get_2d_from_pose(ground_truth,model, pose, height, width, focal, near, far, 
   rays_o, rays_d = get_rays(height, width, focal, pose)
   rays_o = tf.cast(rays_o, tf.float32) #edit
   rays_d = tf.cast(rays_d, tf.float32) #edit
-  predicted, _, _, _ = render_rays_segment(model, rays_o, rays_d, near= near, far= far, N_samples= ray_samples, L_embed = L_embed)
+  predicted, _, _, _ = render_rays_segment(model, rays_o, rays_d, near= near, far= far, N_samples= ray_samples, L_embed = L_embed, channel = channel)
   pic = visualize(ground_truth, predicted, epoch = epochs, iternums = None, psnrs= psnrs)
   return predicted, pic
 
@@ -158,8 +158,9 @@ def run(train_data,
       gradients = tape.gradient(loss, model.trainable_variables)
       optimizer.apply_gradients(zip(gradients, model.trainable_variables))
       if i%50 ==0:
-        psnr = get_avg_PSNR(model, test_data, sample_num = psnr_samples, near = near, far = far, ray_samples = ray_samples, L_embed = L_embed)
+        psnr = get_avg_PSNR(model, test_data, sample_num = psnr_samples, near = near, far = far, ray_samples = ray_samples, L_embed = L_embed, channel= channel)
         psnrs.append(psnr)
+        wandb.log({"psnr": psnr})
         iternums.append(i)
         training_losses.append(loss)
   #VISUALIZE WHILE RUNNING - It shows total of "see"-parameter images, 
@@ -169,12 +170,13 @@ def run(train_data,
           img_i = 0 #FIX TO 0
           target = train_imgs[img_i]
           pose = poses[img_i]
-          t = time.time()
+          t = time.time() 
           rays_o, rays_d = get_rays(height, width, focal, pose)
           rays_o = tf.cast(rays_o, tf.float32) #edit
           rays_d = tf.cast(rays_d, tf.float32) #edit
-          predicted, _, _, _ = render_rays_segment(model, rays_o, rays_d, near=near, far=far, N_samples=ray_samples, L_embed = L_embed, channel = channel)
+          predicted, _, _, _ = render_rays_segment(model, rays_o, rays_d, near=near, far=far, N_samples=ray_samples, rand=True, L_embed = L_embed, channel = channel)
           loss = tf.reduce_mean(tf.square(predicted - target))
+          wandb.log({'loss': loss})
           valid_losses.append(loss)
           valid_iternums.append(i)
           fig = visualize(target, predicted, i, iternums, valid_iternums, psnrs, to_save = to_save, training_losses = training_losses, valid_losses = valid_losses)
